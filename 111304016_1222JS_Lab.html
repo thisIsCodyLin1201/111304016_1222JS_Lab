@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>擲骰子</title>
+  <style>
+    /* 如果需要，請在這裡添加 CSS 樣式 */
+  </style>
+</head>
+<body>
+
+<!-- 用來容納骰子圖片的容器 -->
+<div id="diceContainer"></div>
+
+<!-- 擲骰子的按鈕 -->
+<button id="rollButton">擲骰子</button>
+
+<!-- 顯示點數次數的表格 -->
+<table id="diceCountTable" border="1">
+  <caption>點數次數</caption>
+  <thead>
+    <tr>
+      <th>點數</th>
+      <th>次數</th>
+      <th>百分比</th> <!-- 新增一列顯示百分比 -->
+    </tr>
+  </thead>
+  <tbody id="diceCountBody">
+    <!-- 這裡將填充點數次數和百分比 -->
+  </tbody>
+</table>
+<script>
+  let pointCount = {}; // 存儲點數次數的物件
+
+  function start() {
+    var button = document.getElementById("rollButton");
+    button.addEventListener("click", rollDice);
+    window.addEventListener("load", createDice);
+    for (let i = 1; i <= 6; i++) {
+      pointCount[i] = 0; // 初始化每個點數次數為0
+    }
+  }
+
+  function createDice() {
+    let diceContainer = document.getElementById("diceContainer");
+
+    // 創建 12 個骰子圖片
+    let numOfDice = 12;
+    for (let i = 1; i <= numOfDice; i++) {
+      let die = document.createElement("img");
+      die.id = "die" + i;
+      die.src = "die1.png"; // 初始默認點數為1，你也可以改為隨機的起始點數
+      die.alt = "die" + i;
+      diceContainer.appendChild(die); // 將每個骰子圖片加入容器
+    }
+  }
+
+  function rollDice() {
+    resetPointCount();
+    let numOfDice = 12;
+    for (let i = 1; i <= numOfDice; i++) {
+      let die = document.getElementById("die" + i);
+      let randomNumber = Math.floor(Math.random() * 6) + 1;
+      setImage(die, randomNumber);
+      pointCount[randomNumber]++; // 更新每個點數的次數
+    }
+    displayPointCount();
+  }
+
+  function setImage(dieImg, dieNumber) {
+    dieImg.src = "die" + dieNumber + ".png";
+    dieImg.alt = "die" + dieNumber;
+  }
+
+  function resetPointCount() {
+    for (let i = 1; i <= 6; i++) {
+      pointCount[i] = 0; // 重置點數次數
+    }
+  }
+
+  function displayPointCount() {
+    let tableBody = document.getElementById("diceCountBody");
+    tableBody.innerHTML = ""; // 清空表格內容
+
+    let totalRolls = 12; // 總共擲骰子的次數
+
+    // 遍歷點數次數並填充表格
+    for (let point in pointCount) {
+      if (pointCount.hasOwnProperty(point)) {
+        let row = tableBody.insertRow();
+        let cell1 = row.insertCell(0);
+        let cell2 = row.insertCell(1);
+        let cell3 = row.insertCell(2);
+
+        cell1.innerHTML = point;
+        cell2.innerHTML = pointCount[point];
+
+        // 計算並顯示百分比
+        let percentage = (pointCount[point] / totalRolls) * 100;
+        cell3.innerHTML = percentage.toFixed(2) + "%";
+      }
+    }
+  }
+
+  start();
+</script>
+
+</body>
+</html>
